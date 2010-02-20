@@ -1,0 +1,82 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+App	.\include\gel.h	/^struct App$/;"	s
+DEBUG_INC	.\include\debug.h	22;"	d
+DEFAULT_COLORDEPTH	.\include\graphics.h	27;"	d
+DEFAULT_FPS	.\include\timing.h	24;"	d
+DEFAULT_FULLSCREEN	.\include\graphics.h	28;"	d
+DEFAULT_HRES	.\include\graphics.h	25;"	d
+DEFAULT_VRES	.\include\graphics.h	26;"	d
+FPS	.\include\gel.h	36;"	d
+GEL_INC	.\include\gel.h	24;"	d
+GFX_Res	.\include\graphics.h	/^struct GFX_Res$/;"	s
+GRAPHICS_INC	.\include\graphics.h	21;"	d
+Graphics	.\include\graphics.h	/^struct Graphics$/;"	s
+MAX	.\include\util.h	26;"	d
+MAX_FPS	.\include\timing.h	25;"	d
+MEMFREE	.\include\util.h	24;"	d
+MIN	.\include\util.h	25;"	d
+RGBColor	.\include\graphics.h	/^struct RGBColor$/;"	s
+TIMETRACE	.\include\timing.h	23;"	d
+TRACE	.\include\debug.h	24;"	d
+UTIL_INC	.\include\util.h	22;"	d
+X_AXIS	.\src\gel.c	4;"	d	file:
+Y_AXIS	.\src\gel.c	3;"	d	file:
+_elapsed_ticks	.\src\timing.c	/^static uint32_t _elapsed_ticks = 0;$/;"	v	file:
+_fps	.\src\timing.c	/^static unsigned int _fps = DEFAULT_FPS;$/;"	v	file:
+_start_ticks	.\src\timing.c	/^static uint32_t _start_ticks = 0;$/;"	v	file:
+app	.\src\gel.c	/^struct App app;$/;"	v	typeref:struct:App
+b	.\include\graphics.h	/^    float b;$/;"	m	struct:RGBColor
+best_res	.\src\graphics.c	/^static struct GFX_Res best_res;$/;"	v	typeref:struct:GFX_Res	file:
+bitdepth	.\include\graphics.h	/^    int bitdepth;           \/\/ recommended is 32$/;"	m	struct:Graphics
+bitdepth	.\src\graphics.c	/^static int bitdepth = DEFAULT_COLORDEPTH;$/;"	v	file:
+cleanup	.\src\gel.c	/^void cleanup()$/;"	f
+current_res	.\src\graphics.c	/^static struct GFX_Res current_res;$/;"	v	typeref:struct:GFX_Res	file:
+draw_scene	.\src\gel.c	/^void draw_scene()$/;"	f
+end_frame	.\src\timing.c	/^void end_frame()$/;"	f
+frame	.\src\timing.c	/^static long frame = 0;$/;"	v	file:
+frame_rate	.\src\timing.c	/^static float frame_rate = 0.0;$/;"	v	file:
+fullscreen	.\include\graphics.h	/^    int fullscreen;         \/\/ 1 = fullscreen, 0 = windowed$/;"	m	struct:Graphics
+fullscreen	.\src\graphics.c	/^static int fullscreen = DEFAULT_FULLSCREEN;$/;"	v	file:
+g	.\include\graphics.h	/^    float g;$/;"	m	struct:RGBColor
+get_best_res	.\src\graphics.c	/^struct GFX_Res get_best_res(void)$/;"	f
+get_current_res	.\src\graphics.c	/^struct GFX_Res get_current_res(void)$/;"	f
+get_elapsed_ticks	.\src\timing.c	/^uint32_t get_elapsed_ticks()$/;"	f
+get_frame_rate	.\src\timing.c	/^float get_frame_rate()$/;"	f
+get_frame_ticks	.\src\timing.c	/^uint32_t get_frame_ticks()$/;"	f
+gfx	.\include\gel.h	/^    struct Graphics gfx;$/;"	m	struct:App	typeref:struct:App::Graphics
+gfx_x_axis	.\src\graphics.c	/^static GLdouble gfx_x_axis, gfx_y_axis;$/;"	v	file:
+gfx_y_axis	.\src\graphics.c	/^static GLdouble gfx_x_axis, gfx_y_axis;$/;"	v	file:
+h	.\include\graphics.h	/^    GLsizei h, v;$/;"	m	struct:GFX_Res
+handle_event	.\src\gel.c	/^void handle_event(SDL_Event *event)$/;"	f
+init	.\src\gel.c	/^void init()$/;"	f
+init_gfx	.\src\graphics.c	/^void init_gfx(const GLdouble x_axis, const GLdouble y_axis)$/;"	f
+init_gl	.\src\graphics.c	/^static int init_gl(const GLsizei hRes, const GLsizei vRes, const GLdouble x_axis, const GLdouble y_axis)$/;"	f	file:
+int_to_rgb	.\src\graphics.c	/^void int_to_rgb(const uint32_t color, struct RGBColor *rgb_color)$/;"	f
+is_fullscreen	.\src\graphics.c	/^int is_fullscreen(void)$/;"	f
+main	.\src\gel.c	/^int main(int argc, char *argv[])$/;"	f
+move_objects	.\src\gel.c	/^void move_objects()$/;"	f
+paused	.\include\gel.h	/^    int paused;$/;"	m	struct:App
+quit	.\include\gel.h	/^    int quit;$/;"	m	struct:App
+r	.\include\graphics.h	/^    float r;$/;"	m	struct:RGBColor
+rand_sign	.\src\util.c	/^int rand_sign()$/;"	f
+randf	.\src\util.c	/^float randf(float limit)$/;"	f
+res	.\include\graphics.h	/^    struct GFX_Res res;         \/\/ current resolution$/;"	m	struct:Graphics	typeref:struct:Graphics::GFX_Res
+resize_window	.\src\graphics.c	/^void resize_window(GLsizei w, GLsizei h, const GLdouble x_axis, const GLdouble y_axis)$/;"	f
+screen	.\src\graphics.c	/^static SDL_Surface *screen = NULL;$/;"	v	file:
+set_fps	.\src\timing.c	/^void set_fps(int fps)$/;"	f
+shutdown	.\src\gel.c	/^void shutdown()$/;"	f
+shutdown_gfx	.\src\graphics.c	/^void shutdown_gfx()$/;"	f
+square	.\src\util.c	/^float square(float n)$/;"	f
+start_timer	.\src\timing.c	/^void start_timer()$/;"	f
+timetrace	.\src\timing.c	/^void timetrace(char *str, ...)$/;"	f
+toggle_fullscreen	.\src\graphics.c	/^void toggle_fullscreen()$/;"	f
+trace	.\src\debug.c	/^void trace(char *str, ...)$/;"	f
+v	.\include\graphics.h	/^    GLsizei h, v;$/;"	m	struct:GFX_Res
+wrapf	.\src\util.c	/^float wrapf(float value, float limit)$/;"	f
+x_axis	.\include\graphics.h	/^    GLdouble x_axis;        \/\/ extent of the X axis from center to each edge. Total width = 2 * x_axis$/;"	m	struct:Graphics
+y_axis	.\include\graphics.h	/^    GLdouble y_axis;        \/\/ extent of the Y axis from center to each edge. Total height = 2 * y_axis$/;"	m	struct:Graphics

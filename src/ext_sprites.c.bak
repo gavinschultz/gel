@@ -1,0 +1,71 @@
+#include    <stdlib.h>
+#include    <stdio.h>
+#include    "ext.h"
+#include    "soil.h"
+#include    "debug.h"
+#include    "SDL_opengl.h"
+
+static int loaded = 0;
+static char *data = NULL;
+static int texture_w = 0;
+static int texture_h = 0;
+static GLuint texture = 0;
+
+int load_texture(void);
+
+int load_texture()
+{
+    char texture_file[] = "resources\\sample.tga";
+    int channels = 0;
+
+    texture = SOIL_load_OGL_texture(texture_file, 
+            SOIL_LOAD_AUTO, 
+            SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    return texture;
+}
+
+void draw_sprites()
+{
+    static float theta = 0.0f;
+    if (!loaded)
+    {
+        load_texture();
+        loaded = 1;
+    }
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glPushMatrix();
+    glRotatef( theta, 0.0f, 0.0f, 1.0f );
+    glBegin(GL_QUADS);
+    glTexCoord2d(0.0,0.0);    glVertex2d(-150.0,-150.0);
+    glTexCoord2d(1.0,0.0);    glVertex2d(+150.0,-150.0);
+    glTexCoord2d(1.0,1.0);    glVertex2d(+150.0,+150.0);
+    glTexCoord2d(0.0,1.0);    glVertex2d(-150.0,+150.0);
+    glEnd();
+    glPopMatrix();
+
+    theta += 1.0f;
+}
+
+void move_sprites()
+{
+
+}
+
+void cleanup_sprites()
+{
+    if (texture != 0)
+        glDeleteTextures(1, &texture);
+}
