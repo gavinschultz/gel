@@ -1,4 +1,6 @@
 #include    "SDL.h"
+#include    <windows.h>
+#include    "GLee.h"
 #include    "graphics.h"
 #include    "debug.h"
 
@@ -6,6 +8,7 @@ static struct GFX_Res best_res;
 static struct GFX_Res current_res;
 static int fullscreen = DEFAULT_FULLSCREEN;
 static int bitdepth = DEFAULT_COLORDEPTH;
+static int vsync = 1;
 static SDL_Surface *screen = NULL;
 GLfloat gx_axis;
 GLfloat gy_axis;
@@ -57,7 +60,7 @@ void init_gfx(const GLfloat x_axis, const GLfloat y_axis)
     }
 
     bitdepth = DEFAULT_COLORDEPTH;
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+//    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     screen = SDL_SetVideoMode(current_res.h, current_res.v, bitdepth, video_flags | SDL_OPENGL | SDL_ANYFORMAT | SDL_RESIZABLE);
     if (screen == NULL)
@@ -86,7 +89,6 @@ static int init_gl(const GLsizei hRes, const GLsizei vRes, const GLfloat x_axis,
         return 0;
     }
 
-//    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_LINE_STIPPLE);
@@ -135,7 +137,6 @@ void resize_window(GLsizei w, GLsizei h, const GLfloat x_axis, const GLfloat y_a
 
     trace("left: %f right: %f bottom: %f top: %f", left, right, bottom, top);
     gluOrtho2D(left, right, bottom, top);
-//    glOrtho( 0, w, h, 0, -1, 1 );
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -145,6 +146,13 @@ void toggle_fullscreen()
 {
     fullscreen = !fullscreen;
     init_gfx(gx_axis, gy_axis);
+}
+
+void toggle_vsync()
+{
+    vsync = !vsync;
+    if (GLEE_WGL_EXT_swap_control)
+        wglSwapIntervalEXT(vsync);
 }
 
 void int_to_rgb(const uint32_t color, struct RGBColor *rgb_color)

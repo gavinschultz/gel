@@ -1,5 +1,4 @@
 #include    "ext.h"
-#include    "SDL_opengl.h"
 #include    "graphics.h"
 
 void draw_frames()
@@ -47,9 +46,4 @@ void draw_frames()
     glEnd();
     glLineStipple(1, 0xFFFF);
     glPopMatrix();
-}
-
-void move_frames()
-{
-
 }

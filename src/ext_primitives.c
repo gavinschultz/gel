@@ -1,5 +1,4 @@
 #include    "ext.h"
-#include    "SDL_opengl.h"
 #include    "graphics.h"
 
 static float x;
@@ -20,7 +19,7 @@ void draw_primitives()
     glPopMatrix();
 }
 
-void move_primitives()
+void move_primitives(fixed t, fixed dt)
 {
     x += 3.2f;
     y += 1.8f;

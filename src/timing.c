@@ -1,54 +1,43 @@
-/* 
-  Copyright (C) 2010 Gavin Schultz
-  
-  This file is part of Asterad.
-  
-  Asterad is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  Asterad is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with Asterad.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
-
-
+#include    <windows.h>
 #include    "timing.h"
 #include    "debug.h"
+#include    "fixed.h"
 
-static uint32_t _start_ticks = 0;
-static uint32_t _elapsed_ticks = 0;
-static unsigned int _fps = DEFAULT_FPS;
+static fixed _start_time = 0;
+static fixed _elapsed_time = 0;
 static long frame = 0;
 static float frame_rate = 0.0;
 
-void start_frame()
+fixed get_time()
 {
-    _start_ticks = SDL_GetTicks();
+    static uint64_t start = 0;
+    static uint64_t frequency = 0;
+    uint64_t counter = 0;
+
+    if (start == 0)
+    {
+        QueryPerformanceCounter((LARGE_INTEGER*)&start);
+        QueryPerformanceFrequency((LARGE_INTEGER*)&frequency);
+        trace("start: %lld, frequency: %lld", start, frequency);
+        return 0;
+    }
+
+    QueryPerformanceCounter((LARGE_INTEGER*)&counter);
+    return dtofp((double)(counter - start) / (double)frequency);
 }
 
-void set_fps(int fps)
+void start_frame()
 {
-    if (fps < 1)
-        _fps = DEFAULT_FPS;
-    else if (fps > MAX_FPS)
-        _fps = MAX_FPS;
-    else
-        _fps = fps;
+    _start_time = get_time();
 }
 
 void end_frame()
 {
-    _elapsed_ticks = SDL_GetTicks() - _start_ticks;
+    _elapsed_time = get_time() - _start_time;
     frame++;
-    if (_elapsed_ticks > 0)
+    if (_elapsed_time > 0)
     {
-        frame_rate = 1000.0f / _elapsed_ticks;
+        frame_rate = (float)(1 << FIXPOINT_SHIFT) / (float)_elapsed_time;
     }
 }
 
@@ -57,14 +46,9 @@ float get_frame_rate()
     return frame_rate;
 }
 
-uint32_t get_frame_ticks()
+fixed get_last_frame_time()
 {
-    return _start_ticks;
-}
-
-uint32_t get_elapsed_ticks()
-{
-    return _elapsed_ticks;
+    return _elapsed_time;
 }
 
 void timetrace(char *str, ...)

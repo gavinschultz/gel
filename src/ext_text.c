@@ -1,8 +1,8 @@
 #include    <FTGL/ftgl.h>
-#include    "SDL_opengl.h"
 #include    "graphics.h"
 #include    "debug.h"
 #include    "timing.h"
+#include    "fixed.h"
 #include    "ext.h"
 
 static FTGLfont *font = NULL;
@@ -10,7 +10,7 @@ static const char fontname[] = "consola.ttf";
 static float sum_frame_rate = 0.0f;
 static float avg_frame_rate = 0.0f;
 static int cnt_frame = 0;
-static uint32_t elapsed_time = 0;
+static fixed elapsed_time = 0;
 
 void draw_text()
 {
@@ -18,10 +18,10 @@ void draw_text()
 
     cnt_frame++;
     sum_frame_rate += get_frame_rate();
-    elapsed_time += get_elapsed_ticks();
-    if (elapsed_time >= 500)
+    elapsed_time += get_last_frame_time();
+    if (elapsed_time >= ftofp(0.25f))
     {
-        trace("sum_frame_rate: %5.1f cnt_frame: %d", sum_frame_rate, cnt_frame);
+//        trace("sum_frame_rate: %5.1f cnt_frame: %d", sum_frame_rate, cnt_frame);
         avg_frame_rate = sum_frame_rate / (float)cnt_frame;
         sum_frame_rate = 0.0f;
         cnt_frame = 0;

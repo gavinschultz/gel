@@ -1,23 +1,23 @@
 #include    "gel.h"
 #include    "ext.h"
+#include    "fixed.h"
+#include    "graphics.h"
 
 #define Y_AXIS              288.0f      /* extent of y-axis */
 #define X_AXIS              512.0f      /* extent of x-axis */
 
 struct App app;
 void (*init_func[])() = { init_sprites };
-void (*draw_func[])() = { draw_sprites, draw_text, draw_frames, draw_primitives };
-void (*move_func[])() = { move_sprites, move_primitives };
+void (*draw_func[])() = { draw_frames, draw_sprites, draw_timing_graph, draw_text };
+void (*move_func[])(fixed, fixed) = { move_sprites };
 void (*cleanup_func[])() = { cleanup_sprites };
 
-//TODO: Have partially implemented time / physics separation as per http://gafferongames.com/game-physics/fix-your-timestep/
-//However still need to implement the "integrate" part, which may make the end result a bit smoother
 int main(int argc, char *argv[])
 {
-    const uint32_t dt = 10;
-    uint32_t accumulator = 0;
-    int32_t delta_time = 0;
-
+    const fixed dt = (1 << FIXPOINT_SHIFT) / 100;   // 60 FPS
+    fixed t = 0;
+    fixed accumulator = 0;
+    fixed delta_time = 0;
     SDL_Event event;
 
     init();
@@ -26,29 +26,26 @@ int main(int argc, char *argv[])
     {
         start_frame();
 
+        delta_time = get_last_frame_time();
+
         if (SDL_PollEvent(&event))
         {
             handle_event(&event);
         }
 
-        delta_time = get_elapsed_ticks();
-
         if (!app.paused)
         {
-            if (delta_time > 250)
-                delta_time = 250;
-
             accumulator += delta_time;
-//            trace("[%d ticks] accumulator: %d dt: %d", SDL_GetTicks(), accumulator, dt);
+//            trace("accumulator %ld, dt: %ld, delta_time %ld", accumulator, dt, delta_time);
 
             while (accumulator >= dt)
             {
-                // integrate
-                move_objects();
-//                trace("[%d ticks] accumulator >= dt (%d >= %d)", SDL_GetTicks(), accumulator, dt);
-//                t += dt;
+                move_objects(t, dt);
+                t += dt;
                 accumulator -= dt;
             }
+
+            interpolate(fpdiv(accumulator, dt));
 
             draw_scene();
         }
@@ -61,17 +58,17 @@ int main(int argc, char *argv[])
 
 void init()
 {
+//    HANDLE hCurrentProcess = GetCurrentProcess();
+//    SetPriorityClass(hCurrentProcess, REALTIME_PRIORITY_CLASS);
+
     if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
     {
         trace("SDL initialization failed: %s.", SDL_GetError());
         exit(1);
     }
 
-    atexit(shutdown);
+    atexit(shutdown_app);
     srand((unsigned int)time(NULL));
-
-    // Timing init
-    set_fps((int)FPS);
 
     // Graphics init
     init_gfx(X_AXIS, Y_AXIS);
@@ -79,7 +76,7 @@ void init()
     init_objects();
 }
 
-void shutdown()
+void shutdown_app()
 {
     cleanup();
     shutdown_gfx();
@@ -116,11 +113,13 @@ void handle_event(SDL_Event *event)
                         init_objects();
                     }
                     break;
+                case SDLK_v:
+                    toggle_vsync();
+                    break;
             }
             break;
         case SDL_VIDEORESIZE:
             resize_window(event->resize.w, event->resize.h, X_AXIS, Y_AXIS);
-//            init_objects();
             break;
     }
 }
@@ -134,13 +133,13 @@ void init_objects()
     }
 }
 
-void move_objects()
+void move_objects(fixed t, fixed dt)
 {
     int i;
 
     for (i=0; i<(sizeof(move_func) / sizeof(*move_func)); i++)
     {
-        move_func[i]();
+        move_func[i](t, dt);
     }
 }
 
@@ -148,7 +147,7 @@ void draw_scene()
 {
     int i;
 
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT); // | GL_DEPTH_BUFFER_BIT);
 
     for(i=0; i<(sizeof(draw_func) / sizeof(*draw_func)); i++)
     {
